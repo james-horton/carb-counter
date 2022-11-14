@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carb Counter", "Carb Counter\Carb Counter.csproj", "{75B60FC7-4E88-4208-8AA1-6F42532C1B92}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75B60FC7-4E88-4208-8AA1-6F42532C1B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B60FC7-4E88-4208-8AA1-6F42532C1B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B60FC7-4E88-4208-8AA1-6F42532C1B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B60FC7-4E88-4208-8AA1-6F42532C1B92}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5BED354-B928-4FC9-9159-6512A7096FA7}
+	EndGlobalSection
+EndGlobal
