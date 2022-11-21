@@ -15,6 +15,15 @@ namespace Carb_Counter.Data
             }
         }
 
+        public async static Task<List<T>> LoadData<T>(string sql, object parms, string connectionStringName)
+        {
+            using (IDbConnection db = new SqlConnection(connectionStringName))
+            {
+                IEnumerable<T> results = await db.QueryAsync<T>(sql, parms);
+                return results.ToList();
+            }
+        }
+
         public async static Task<int> SaveData(string sql, object parms, string connectionStringName)
         {
             using (IDbConnection db = new SqlConnection(connectionStringName))
