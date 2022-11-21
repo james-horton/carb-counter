@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using System.Net.Mail;
 using System.Net;
 using Azure;
@@ -11,7 +9,6 @@ namespace Carb_Counter.Services
 {
     public class EmailSender : IEmailSender
     {
-
         private readonly ILogger _logger;
 
         public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
