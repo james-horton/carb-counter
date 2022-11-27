@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carb Counter", "Carb Counte
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CCData", "Carb Counter Db\CCData.sqlproj", "{121E08ED-B82D-4043-BE65-A7100CE27BBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCDataManager.Library", "CCDataManager.Library\CCDataManager.Library.csproj", "{19390121-8D59-4480-99A1-91900E544805}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{121E08ED-B82D-4043-BE65-A7100CE27BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{121E08ED-B82D-4043-BE65-A7100CE27BBD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{121E08ED-B82D-4043-BE65-A7100CE27BBD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{19390121-8D59-4480-99A1-91900E544805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19390121-8D59-4480-99A1-91900E544805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19390121-8D59-4480-99A1-91900E544805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19390121-8D59-4480-99A1-91900E544805}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

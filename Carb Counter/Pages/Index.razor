@@ -5,3 +5,214 @@
 <h1>Carb Counter</h1>
 
 A simple carb counting app.
+
+<br/>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Food" Click="@InsertRow" Disabled=@(foodToInsert != null || foodToUpdate != null) />
+<RadzenDataGrid @ref="foodsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@foods" TItem="FoodModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
+    <Columns>
+
+        <RadzenDataGridColumn TItem="FoodModel" Property="Id" Title="Id" Width="10%" />
+
+        <RadzenDataGridColumn TItem="FoodModel" Property="Name" Title="Name" Width="30%">
+            <EditTemplate Context="food">
+                <RadzenTextBox @bind-Value="food.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="FoodModel" Property="ServingSize" Title="Serving Size" Width="15%">
+            <EditTemplate Context="food">
+                <RadzenTextBox @bind-Value="food.ServingSize" Style="width:100%; display: block" Name="ServingSize" />
+                <RadzenRequiredValidator Text="Serving Size is required" Component="ServingSize" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="FoodModel" Property="CarbQty" Title="Carbs" Width="15%">
+            <EditTemplate Context="food">
+                <RadzenNumeric @bind-Value="food.CarbQty" Style="width:100%; display: block" Name="CarbQty" />
+                <RadzenRequiredValidator Text="Carbs are required" Component="CarbQty" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="FoodModel" Property="CalorieQty" Title="Calories" Width="15%">
+            <EditTemplate Context="food">
+                <RadzenNumeric @bind-Value="food.CalorieQty" Style="width:100%; display: block" Name="CalorieQty" />
+                <RadzenRequiredValidator Text="Calories are required" Component="CalorieQty" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+       
+        <RadzenDataGridColumn TItem="FoodModel" Context="food" Filterable="false" Sortable="false" 
+                                TextAlign="TextAlign.Right" Width="15%">
+            <Template Context="food">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(food))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(food))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+
+            <EditTemplate Context="food">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(food))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(food))">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(food))">
+                </RadzenButton>
+            </EditTemplate>
+
+        </RadzenDataGridColumn>
+
+    </Columns>
+</RadzenDataGrid>
+
+
+@code {
+
+    RadzenDataGrid<FoodModel>? foodsGrid = new RadzenDataGrid<FoodModel>();
+    IList<FoodModel>? foods = new List<FoodModel>();
+    FoodModel? foodToInsert = new FoodModel();
+    FoodModel? foodToUpdate = new FoodModel();
+
+    void Reset()
+    {
+        foodToInsert = null;
+        foodToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var f = new FoodModel
+        {
+            Id = 1,
+            UserId = "tsten3-sten3e-sten3",
+            Name = "Apple",
+            ServingSize = "1",
+            CarbQty = 2,
+            CalorieQty = 120,
+            DateAdded = DateTime.UtcNow
+        };
+
+        foods?.Add(f);
+
+        // For demo purposes only
+        //foods = dbContext.Orders.Include("Customer").Include("Employee").ToList();
+
+        // For production
+        //orders = dbContext.Orders.Include("Customer").Include("Employee");
+    }
+
+    async Task EditRow(FoodModel food)
+    {
+        foodToUpdate = food;
+
+        if (foodsGrid != null)
+        {
+            await foodsGrid.EditRow(food);
+        }
+    }
+
+    void OnUpdateRow(FoodModel food)
+    {
+        if (food == foodToInsert)
+        {
+            foodToInsert = null;
+        }
+
+        foodToUpdate = null;
+
+        //dbContext.Update(food);       
+
+        // For production
+        //dbContext.SaveChanges();
+    }
+
+    async Task SaveRow(FoodModel food)
+    {
+        if (foodsGrid != null)
+        {
+            await foodsGrid.UpdateRow(food);
+        }
+    }
+
+    void CancelEdit(FoodModel food)
+    {
+        if (food == foodToInsert)
+        {
+            foodToInsert = null;
+        }
+
+        foodToUpdate = null;
+
+        foodsGrid?.CancelEditRow(food);
+
+        // For production
+        //var foodEntry = dbContext.Entry(food);
+        //if (foodEntry.State == EntityState.Modified)
+        //{
+        //    foodEntry.CurrentValues.SetValues(foodEntry.OriginalValues);
+        //    foodEntry.State = EntityState.Unchanged;
+        //}
+    }
+
+    async Task DeleteRow(FoodModel food)
+    {
+        if (food == foodToInsert)
+        {
+            foodToInsert = null;
+        }
+
+        if (food == foodToUpdate)
+        {
+            foodToUpdate = null;
+        }
+
+        if (foods != null && foods.Contains(food))
+        {
+            //dbContext.Remove<food>(food);
+
+            // For demo purposes only
+            foods.Remove(food);
+
+            // For production
+            //dbContext.SaveChanges();
+
+            if (foodsGrid != null)
+            {
+                await foodsGrid.Reload();
+            }
+        }
+        else
+        {
+            foodsGrid?.CancelEditRow(food);
+            if (foodsGrid != null)
+            {
+                await foodsGrid.Reload();
+            }
+        }
+    }
+
+    async Task InsertRow()
+    {
+        foodToInsert = new FoodModel();
+
+        if (foodsGrid != null)
+        {
+            await foodsGrid.InsertRow(foodToInsert);
+        }        
+    }
+
+    void OnCreateRow(FoodModel food)
+    {
+        //dbContext.Add(food);
+
+        // For demo purposes only
+        //food.Customer = dbContext.Customers.Find(food.CustomerID);
+        //food.Employee = dbContext.Employees.Find(food.EmployeeID);
+
+        // For production
+        //dbContext.SaveChanges();
+    }
+}
