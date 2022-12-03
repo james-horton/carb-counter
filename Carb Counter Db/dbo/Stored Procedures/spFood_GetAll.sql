@@ -4,7 +4,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT	[UserId], [Name], [ServingSize], [CarbQty], [CalorieQty], [DateAdded]
+	SELECT	[Id], [UserId], [Name], [ServingSize], [CarbQty], [CalorieQty], [DateAdded]
 	FROM	dbo.Food
 	WHERE	UserId = @UserId;
 END
