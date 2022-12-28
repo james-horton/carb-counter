@@ -25,7 +25,7 @@ namespace CCDataManager.Library.DataAccess
             return _config.GetConnectionString(name);
         }
 
-        public async Task<List<T>> LoadData<T>(string sql, string connectionStringName)
+        public async Task<List<T>> LoadDataAsync<T>(string sql, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
@@ -36,7 +36,7 @@ namespace CCDataManager.Library.DataAccess
             }
         }
 
-        public async Task<List<T>> LoadData<T>(string sql, object parms, string connectionStringName)
+        public async Task<List<T>> LoadDataAsync<T>(string sql, object parms, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
@@ -47,7 +47,7 @@ namespace CCDataManager.Library.DataAccess
             }
         }
 
-        public async Task<int> SaveData(string sql, object parms, string connectionStringName)
+        public async Task<int> SaveDataAsync(string sql, object parms, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
@@ -58,7 +58,7 @@ namespace CCDataManager.Library.DataAccess
             }
         }
 
-        public async Task<List<T>> LoadDataSP<T, U>(string storedProcedure, U parameters, string connectionStringName)
+        public async Task<List<T>> LoadDataSPAsync<T, U>(string storedProcedure, U parameters, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
@@ -71,13 +71,26 @@ namespace CCDataManager.Library.DataAccess
             }
         }
 
-        public async Task<int> SaveDataSP<T>(string storedProcedure, T parameters, string connectionStringName)
+        public async Task<int> SaveDataSPAsync<T>(string storedProcedure, T parameters, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 int result = await connection.ExecuteAsync(storedProcedure, parameters,
+                   commandType: CommandType.StoredProcedure);
+
+                return result;
+            }
+        }
+
+        public async Task<object> ExecuteScalarSPAsync<T>(string storedProcedure, T parameters, string connectionStringName)
+        {
+            string connectionString = GetConnectionString(connectionStringName);
+
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                var result = await connection.ExecuteScalarAsync(storedProcedure, parameters,
                    commandType: CommandType.StoredProcedure);
 
                 return result;

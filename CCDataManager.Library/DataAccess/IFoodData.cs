@@ -6,7 +6,9 @@ namespace CCDataManager.Library.DataAccess
 {
     public interface IFoodData
     {
-        Task<List<FoodModel>> GetFoods(string userId);
-        Task<int> SaveFoodRecord(FoodModel food);
+        Task<List<FoodModel>> GetFoodsAsync(string userId);
+        Task<long> InsertFoodAsync(string userId, FoodModel food);
+        Task<int> UpdateFoodAsync(string userId, FoodModel food);
+        Task<int> DeleteFoodAsync(string userId, long id);
     }
 }

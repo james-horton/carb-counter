@@ -16,11 +16,13 @@ namespace Carb_Counter.Pages
         protected List<FoodModel>? foods;
         protected FoodModel? foodToInsert;
         protected FoodModel? foodToUpdate;
+        protected FoodModel? foodOriginal;
         
         protected void Reset()
         {
             foodToInsert = null;
             foodToUpdate = null;
+            foodOriginal = null;
         }
 
         protected override async Task OnInitializedAsync()
@@ -32,30 +34,27 @@ namespace Carb_Counter.Pages
         {
             if (firstRender)
             {
-                if (AuthenticationStateProvider != null)
-                {
-                    var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var userId = await GetAuthenticatedUserId();
 
-                    if (authState?.User?.Identity?.IsAuthenticated == true)
-                    {
-                        var userId = authState?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                        if (userId != null)
-                        {
-                            await LoadData(userId);
-                        }
-                    }
+                if (userId != null)
+                {
+                    await LoadData(userId);
                 }
             }
         }
 
         protected async Task LoadData(string userId)
         {
-            foods = await FoodData.GetFoods(userId);
-            StateHasChanged();
+            if (FoodData != null)
+            { 
+                foods = await FoodData.GetFoodsAsync(userId);
+                StateHasChanged();
+            }
         }
 
         protected async Task EditRow(FoodModel food)
         {
+            foodOriginal = (FoodModel) food.Clone();
             foodToUpdate = food;
 
             if (foodsGrid != null)
@@ -64,7 +63,7 @@ namespace Carb_Counter.Pages
             }
         }
 
-        protected void OnUpdateRow(FoodModel food)
+        protected async Task OnUpdateRow(FoodModel food)
         {
             if (food == foodToInsert)
             {
@@ -73,10 +72,12 @@ namespace Carb_Counter.Pages
 
             foodToUpdate = null;
 
-            //dbContext.Update(food);       
+            var userId = await GetAuthenticatedUserId();
 
-            // For production
-            //dbContext.SaveChanges();
+            if (userId != null && FoodData != null)
+            {
+                var result = await FoodData.UpdateFoodAsync(userId, food);
+            }
         }
 
         protected async Task SaveRow(FoodModel food)
@@ -96,15 +97,16 @@ namespace Carb_Counter.Pages
 
             foodToUpdate = null;
 
-            foodsGrid?.CancelEditRow(food);
+            // restore original food values before edits were made
+            if (foodOriginal != null)
+            {
+                food.Name = foodOriginal.Name;
+                food.ServingSize = foodOriginal.ServingSize;
+                food.CarbQty = foodOriginal.CarbQty;
+                food.CalorieQty = foodOriginal.CalorieQty;
+            }
 
-            // For production
-            //var foodEntry = dbContext.Entry(food);
-            //if (foodEntry.State == EntityState.Modified)
-            //{
-            //    foodEntry.CurrentValues.SetValues(foodEntry.OriginalValues);
-            //    foodEntry.State = EntityState.Unchanged;
-            //}
+            foodsGrid?.CancelEditRow(food);
         }
                 
         protected async Task DeleteRow(FoodModel food)
@@ -121,17 +123,16 @@ namespace Carb_Counter.Pages
 
             if (foods != null && foods.Contains(food))
             {
-                //dbContext.Remove<food>(food);
-
-                // For demo purposes only
-                foods.Remove(food);
-
-                // For production
-                //dbContext.SaveChanges();
-
-                if (foodsGrid != null)
+                var userId = await GetAuthenticatedUserId();
+                if (userId != null && FoodData != null)
                 {
-                    await foodsGrid.Reload();
+                    var result = await FoodData.DeleteFoodAsync(userId, food.Id);
+                                       
+                    if (foodsGrid != null)
+                    {
+                        foods.Remove(food);
+                        await foodsGrid.Reload();
+                    }                    
                 }
             }
             else
@@ -154,16 +155,35 @@ namespace Carb_Counter.Pages
             }
         }
 
-        protected void OnCreateRow(FoodModel food)
+        protected async Task OnCreateRow(FoodModel food)
         {
-            //dbContext.Add(food);
+            var userId = await GetAuthenticatedUserId();
 
-            // For demo purposes only
-            //food.Customer = dbContext.Customers.Find(food.CustomerID);
-            //food.Employee = dbContext.Employees.Find(food.EmployeeID);
+            if (userId != null && FoodData != null)
+            {
+                var id = await FoodData.InsertFoodAsync(userId, food);
+                if (id > 0)
+                {
+                    foodToInsert?.Id = id;
+                    foodToInsert = null;
+                }
+            }
+        }
 
-            // For production
-            //dbContext.SaveChanges();
+        protected async Task<string> GetAuthenticatedUserId()
+        {
+            string userId = "";
+            if (AuthenticationStateProvider != null)
+            {
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+                if (authState?.User?.Identity?.IsAuthenticated == true)
+                {
+                    userId = authState?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+                }
+
+            }
+            return userId;
         }
     }
 }
