@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spFood_Insert]
-	@Id				int output,
+	@Id				int,
 	@UserId			nvarchar(128),
 	@Name			nvarchar(255),
 	@ServingSize	nvarchar(25), 
@@ -11,7 +11,6 @@ BEGIN
 	SET NOCOUNT ON;
 
 	INSERT INTO dbo.Food (UserId, [Name], ServingSize, CarbQty, CalorieQty, DateAdded)
-	VALUES (@UserId, @Name, @ServingSize, @CarbQty, @CalorieQty, @DateAdded);
-
-	SELECT @Id = Scope_Identity();
+	OUTPUT INSERTED.Id
+	VALUES (@UserId, @Name, @ServingSize, @CarbQty, @CalorieQty, @DateAdded)
 END

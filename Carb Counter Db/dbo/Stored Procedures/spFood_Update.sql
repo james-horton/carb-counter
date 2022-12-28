@@ -6,13 +6,15 @@
 	@CarbQty		decimal,
 	@CalorieQty		decimal
 AS
+BEGIN
 	SET NOCOUNT ON;
 
 	UPDATE	dbo.Food
-	SET		[Name]= @Name, 
+	SET		[Name] = @Name, 
 			[ServingSize] = @ServingSize, 
 			[CarbQty] = @CarbQty, 
 			[CalorieQty] = @CalorieQty
 	WHERE	Id = @Id
-	AND		UserId = @UserId;
-RETURN 0
+	AND		UserId = @UserId
+END
+
