@@ -16,13 +16,16 @@ namespace Carb_Counter.Pages
         protected List<FoodModel>? foods;
         protected FoodModel? foodToInsert;
         protected FoodModel? foodToUpdate;
-        protected FoodModel? foodOriginal;
+
+        // Used to restore the original values when edits are canceled. The reason a dictionary is used
+        // instead of a single object is because the user can click to another row in the middle of an
+        // edit, and a dictionary will keep track of the changes for all rows in the grid.
+        protected Dictionary<long, FoodModel>? foodsOriginal = new();
         
         protected void Reset()
         {
             foodToInsert = null;
             foodToUpdate = null;
-            foodOriginal = null;
         }
 
         protected override async Task OnInitializedAsync()
@@ -54,7 +57,15 @@ namespace Carb_Counter.Pages
 
         protected async Task EditRow(FoodModel food)
         {
-            foodOriginal = (FoodModel) food.Clone();
+            if (foodsOriginal != null)
+            {
+                if (foodsOriginal.ContainsKey(food.Id) == false)
+                {
+                    var orignalFood = (FoodModel)food.Clone();
+                    foodsOriginal[orignalFood.Id] = orignalFood;
+                }
+            }
+
             foodToUpdate = food;
 
             if (foodsGrid != null)
@@ -78,6 +89,12 @@ namespace Carb_Counter.Pages
             {
                 var result = await FoodData.UpdateFoodAsync(userId, food);
             }
+
+            // reset any previous edits
+            if (foodsOriginal != null && foodsOriginal.ContainsKey(food.Id))
+            {
+                foodsOriginal.Remove(food.Id);
+            }
         }
 
         protected async Task SaveRow(FoodModel food)
@@ -97,13 +114,17 @@ namespace Carb_Counter.Pages
 
             foodToUpdate = null;
 
-            // restore original food values before edits were made
-            if (foodOriginal != null)
+            // restore original food values before edits were made.
+            if (foodsOriginal != null && foodsOriginal.ContainsKey(food.Id))
             {
-                food.Name = foodOriginal.Name;
-                food.ServingSize = foodOriginal.ServingSize;
-                food.CarbQty = foodOriginal.CarbQty;
-                food.CalorieQty = foodOriginal.CalorieQty;
+                var id = food.Id;
+                food.Name = foodsOriginal[id].Name;
+                food.ServingSize = foodsOriginal[id].ServingSize;
+                food.CarbQty = foodsOriginal[id].CarbQty;
+                food.CalorieQty = foodsOriginal[id].CalorieQty;
+
+                // reset previous edit.
+                foodsOriginal.Remove(id);
             }
 
             foodsGrid?.CancelEditRow(food);
@@ -162,9 +183,9 @@ namespace Carb_Counter.Pages
             if (userId != null && FoodData != null)
             {
                 var id = await FoodData.InsertFoodAsync(userId, food);
-                if (id > 0)
+                if (foodToInsert != null && id > 0)
                 {
-                    foodToInsert?.Id = id;
+                    foodToInsert.Id = id;
                     foodToInsert = null;
                 }
             }
