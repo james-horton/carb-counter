@@ -8,7 +8,24 @@ A simple carb counting app.
 
 <br/>
 
-<Foods />
+<AuthorizeView>
+
+    <Authorized>
+        <Foods />
+    </Authorized>
+
+    <NotAuthorized>
+        <br />
+        <iframe width="560" height="315" 
+            src="https://www.youtube.com/embed/ZXsQAXx_ao0" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+        </iframe>
+    </NotAuthorized>
+
+</AuthorizeView>
+
 
 @code {
     

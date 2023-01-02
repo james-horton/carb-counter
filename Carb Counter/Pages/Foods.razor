@@ -1,163 +1,159 @@
 ﻿@inherits FoodsBase
 
-<AuthorizeView>
-    <Authorized>
 
-        <RadzenButton ButtonStyle="ButtonStyle.Success"
-                      Icon="add_circle_outline"
-                      Class="mt-2 mb-4"
-                      Text="Add New Food"
-                      Click="@InsertRow"
-                      Disabled=@(foodToInsert != null || foodToUpdate != null) />
+<RadzenButton ButtonStyle="ButtonStyle.Success"
+                Icon="add_circle_outline"
+                Class="mt-2 mb-4"
+                Text="Add New Food"
+                Click="@InsertRow"
+                Disabled=@(foodToInsert != null || foodToUpdate != null) />
 
-        <RadzenDataGrid @ref="foodsGrid"
-                        AllowAlternatingRows="false"
-                        AllowFiltering="true"
-                        AllowPaging="true"
-                        PageSize="5"
-                        AllowSorting="true"
-                        EditMode="DataGridEditMode.Single"
-                        Data="@foods"
-                        TItem="FoodModel"
-                        RowUpdate="@OnUpdateRow"
-                        RowCreate="@OnCreateRow"
-                        Sort="@Reset"
-                        Page="@Reset"
-                        Filter="@Reset">
-            <Columns>
+<RadzenDataGrid @ref="foodsGrid"
+                AllowAlternatingRows="false"
+                AllowFiltering="true"
+                AllowPaging="true"
+                PageSize="5"
+                AllowSorting="true"
+                EditMode="DataGridEditMode.Single"
+                Data="@foods"
+                TItem="FoodModel"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                Sort="@Reset"
+                Page="@Reset"
+                Filter="@Reset">
+    <Columns>
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Property="Id"
-                                      Title="Id"
-                                      Width="10%" />
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Property="Id"
+                                Title="Id"
+                                Width="10%" />
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Property="Name"
-                                      Title="Name"
-                                      Width="30%">
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Property="Name"
+                                Title="Name"
+                                Width="30%">
 
-                    <EditTemplate Context="food">
+            <EditTemplate Context="food">
 
-                        <RadzenTextBox @bind-Value="food.Name"
-                                       Style="width:100%; display: block"
-                                       Name="Name" />
+                <RadzenTextBox @bind-Value="food.Name"
+                                Style="width:100%; display: block"
+                                Name="Name" />
 
-                        <RadzenRequiredValidator Text="Name is required"
-                                                 Component="Name"
-                                                 Popup="true" />
+                <RadzenRequiredValidator Text="Name is required"
+                                            Component="Name"
+                                            Popup="true" />
 
-                    </EditTemplate>
+            </EditTemplate>
 
-                </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Property="ServingSize"
-                                      Title="Serving Size"
-                                      Width="15%">
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Property="ServingSize"
+                                Title="Serving Size"
+                                Width="15%">
 
-                    <EditTemplate Context="food">
+            <EditTemplate Context="food">
 
-                        <RadzenTextBox @bind-Value="food.ServingSize"
-                                       Style="width:100%; display: block"
-                                       Name="ServingSize" />
+                <RadzenTextBox @bind-Value="food.ServingSize"
+                                Style="width:100%; display: block"
+                                Name="ServingSize" />
 
-                        <RadzenRequiredValidator Text="Serving Size is required"
-                                                 Component="ServingSize"
-                                                 Popup="true" />
+                <RadzenRequiredValidator Text="Serving Size is required"
+                                            Component="ServingSize"
+                                            Popup="true" />
 
-                    </EditTemplate>
+            </EditTemplate>
 
-                </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Property="CarbQty"
-                                      Title="Carbs"
-                                      Width="15%">
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Property="CarbQty"
+                                Title="Carbs"
+                                Width="15%">
 
-                    <EditTemplate Context="food">
-                        <RadzenNumeric @bind-Value="food.CarbQty"
-                                       Style="width:100%; display: block"
-                                       Name="CarbQty" />
+            <EditTemplate Context="food">
+                <RadzenNumeric @bind-Value="food.CarbQty"
+                                Style="width:100%; display: block"
+                                Name="CarbQty" />
 
-                        <RadzenRequiredValidator Text="Carbs are required"
-                                                 Component="CarbQty"
-                                                 Popup="true" />
+                <RadzenRequiredValidator Text="Carbs are required"
+                                            Component="CarbQty"
+                                            Popup="true" />
 
-                    </EditTemplate>
+            </EditTemplate>
 
-                </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Property="CalorieQty"
-                                      Title="Calories"
-                                      Width="15%">
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Property="CalorieQty"
+                                Title="Calories"
+                                Width="15%">
 
-                    <EditTemplate Context="food">
+            <EditTemplate Context="food">
 
-                        <RadzenNumeric @bind-Value="food.CalorieQty"
-                                       Style="width:100%; display: block"
-                                       Name="CalorieQty" />
+                <RadzenNumeric @bind-Value="food.CalorieQty"
+                                Style="width:100%; display: block"
+                                Name="CalorieQty" />
 
-                        <RadzenRequiredValidator Text="Calories are required"
-                                                 Component="CalorieQty"
-                                                 Popup="true" />
+                <RadzenRequiredValidator Text="Calories are required"
+                                            Component="CalorieQty"
+                                            Popup="true" />
 
-                    </EditTemplate>
+            </EditTemplate>
 
-                </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="FoodModel"
-                                      Context="food"
-                                      Filterable="false"
-                                      Sortable="false"
-                                      TextAlign="TextAlign.Right" Width="15%">
+        <RadzenDataGridColumn TItem="FoodModel"
+                                Context="food"
+                                Filterable="false"
+                                Sortable="false"
+                                TextAlign="TextAlign.Right" Width="15%">
 
-                    <Template Context="food">
+            <Template Context="food">
 
-                        <RadzenButton Icon="edit"
-                                      ButtonStyle="ButtonStyle.Light"
-                                      Variant="Variant.Flat"
-                                      Size="ButtonSize.Medium"
-                                      Click="@(args => EditRow(food))" @onclick:stopPropagation="true">
-                        </RadzenButton>
+                <RadzenButton Icon="edit"
+                                ButtonStyle="ButtonStyle.Light"
+                                Variant="Variant.Flat"
+                                Size="ButtonSize.Medium"
+                                Click="@(args => EditRow(food))" @onclick:stopPropagation="true">
+                </RadzenButton>
 
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger"
-                                      Icon="delete"
-                                      Variant="Variant.Flat"
-                                      Shade="Shade.Lighter"
-                                      Size="ButtonSize.Medium" Class="my-1 ms-1"
-                                      Click="@(args => DeleteRow(food))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                    </Template>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                Icon="delete"
+                                Variant="Variant.Flat"
+                                Shade="Shade.Lighter"
+                                Size="ButtonSize.Medium" Class="my-1 ms-1"
+                                Click="@(args => DeleteRow(food))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
 
-                    <EditTemplate Context="food">
-                        <RadzenButton Icon="check"
-                                      ButtonStyle="ButtonStyle.Success"
-                                      Variant="Variant.Flat"
-                                      Size="ButtonSize.Medium"
-                                      Click="@((args) => SaveRow(food))">
-                        </RadzenButton>
+            <EditTemplate Context="food">
+                <RadzenButton Icon="check"
+                                ButtonStyle="ButtonStyle.Success"
+                                Variant="Variant.Flat"
+                                Size="ButtonSize.Medium"
+                                Click="@((args) => SaveRow(food))">
+                </RadzenButton>
 
-                        <RadzenButton Icon="close"
-                                      ButtonStyle="ButtonStyle.Light"
-                                      Variant="Variant.Flat"
-                                      Size="ButtonSize.Medium" Class="my-1 ms-1"
-                                      Click="@((args) => CancelEdit(food))">
-                        </RadzenButton>
+                <RadzenButton Icon="close"
+                                ButtonStyle="ButtonStyle.Light"
+                                Variant="Variant.Flat"
+                                Size="ButtonSize.Medium" Class="my-1 ms-1"
+                                Click="@((args) => CancelEdit(food))">
+                </RadzenButton>
 
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger"
-                                      Icon="delete"
-                                      Variant="Variant.Flat"
-                                      Shade="Shade.Lighter"
-                                      Size="ButtonSize.Medium"
-                                      Class="my-1 ms-1"
-                                      Click="@(args => DeleteRow(food))">
-                        </RadzenButton>
-                    </EditTemplate>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                Icon="delete"
+                                Variant="Variant.Flat"
+                                Shade="Shade.Lighter"
+                                Size="ButtonSize.Medium"
+                                Class="my-1 ms-1"
+                                Click="@(args => DeleteRow(food))">
+                </RadzenButton>
+            </EditTemplate>
 
-                </RadzenDataGridColumn>
+        </RadzenDataGridColumn>
 
-            </Columns>
-        </RadzenDataGrid>
-    </Authorized>
-</AuthorizeView>
+    </Columns>
+</RadzenDataGrid>
