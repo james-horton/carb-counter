@@ -73,9 +73,12 @@
                                 Width="15%">
 
             <EditTemplate Context="food">
+
                 <RadzenNumeric @bind-Value="food.CarbQty"
                                 Style="width:100%; display: block"
-                                Name="CarbQty" />
+                                Name="CarbQty"
+                                Min="0"
+                                Max="5000"/>
 
                 <RadzenRequiredValidator Text="Carbs are required"
                                             Component="CarbQty"
@@ -94,7 +97,9 @@
 
                 <RadzenNumeric @bind-Value="food.CalorieQty"
                                 Style="width:100%; display: block"
-                                Name="CalorieQty" />
+                                Name="CalorieQty"
+                                Min="0"
+                                Max="5000" />
 
                 <RadzenRequiredValidator Text="Calories are required"
                                             Component="CalorieQty"
