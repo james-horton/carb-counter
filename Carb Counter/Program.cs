@@ -9,8 +9,21 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Carb_Counter.Services;
 using CCDataManager.Library.DataAccess;
+using Serilog;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+//Log.Logger = new LoggerConfiguration()
+//    .MinimumLevel.Debug()
+//    .WriteTo.Console()
+//    .CreateLogger();
+
+////builder.Host.UseSerilog();
+//builder.Logging.AddSerilog();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -45,12 +58,21 @@ builder.Services.AddTransient<IFoodData, FoodData>();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+builder.Services.AddScoped<IErrorBoundaryLogger, ErrorBoundaryLogger>();
+
+// Register IExceptionHandlerPathFeature as a scoped service
+builder.Services.AddScoped<IExceptionHandlerPathFeature>(sp =>
+{
+    var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+    return httpContextAccessor.HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
 else
