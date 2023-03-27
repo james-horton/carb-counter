@@ -17,13 +17,9 @@ using Microsoft.AspNetCore.Diagnostics;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
-//Log.Logger = new LoggerConfiguration()
-//    .MinimumLevel.Debug()
-//    .WriteTo.Console()
-//    .CreateLogger();
-
-////builder.Host.UseSerilog();
-//builder.Logging.AddSerilog();
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
+                .ReadFrom.Configuration(hostingContext.Configuration));
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -64,7 +60,7 @@ builder.Services.AddScoped<IErrorBoundaryLogger, ErrorBoundaryLogger>();
 builder.Services.AddScoped<IExceptionHandlerPathFeature>(sp =>
 {
     var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
-    return httpContextAccessor.HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+    return httpContextAccessor.HttpContext?.Features.Get<IExceptionHandlerPathFeature>()!;
 });
 
 var app = builder.Build();
@@ -72,7 +68,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseExceptionHandler("/Error");
     app.UseMigrationsEndPoint();
 }
 else
